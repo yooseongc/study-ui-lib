@@ -10,6 +10,7 @@ export type { InfoBoxColor } from './components/ui/InfoBox'
 export type { StatColor } from './components/ui/StatCard'
 export type { AlertVariant } from './components/ui/Alert'
 export type { AnimationStep } from './components/viz/AnimatedDiagram'
+export type { InlineCodeColor } from './components/ui/InlineCode'
 
 // ── Contexts ──────────────────────────────────────────────────────────────────
 export { ThemeProvider } from './contexts/ThemeContext'
