@@ -28,13 +28,15 @@ interface InfoTableProps {
     striped?: boolean
     /** Extra Tailwind classes on wrapper */
     className?: string
+    /** Per-row className callback for custom highlighting */
+    rowClassName?: (row: TableRow, index: number) => string
 }
 
 function isColumnArray(headers: string[] | TableColumn[]): headers is TableColumn[] {
     return headers.length > 0 && typeof headers[0] === 'object'
 }
 
-export function InfoTable({ headers, rows, mono = false, striped = false, className = '' }: InfoTableProps) {
+export function InfoTable({ headers, rows, mono = false, striped = false, className = '', rowClassName }: InfoTableProps) {
     const columns: TableColumn[] = isColumnArray(headers)
         ? headers
         : headers.map((h) => ({ header: h }))
@@ -72,6 +74,7 @@ export function InfoTable({ headers, rows, mono = false, striped = false, classN
                                 striped && ri % 2 === 1
                                     ? 'bg-gray-50 dark:bg-gray-800/50'
                                     : '',
+                                rowClassName?.(row, ri) ?? '',
                             ].join(' ')}
                         >
                             {row.cells.map((cell, ci) => {

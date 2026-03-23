@@ -50,6 +50,7 @@ export { LearningCard } from './components/ui/LearningCard'
 export { TopicHeader } from './components/ui/TopicHeader'
 export { TopicPage } from './components/ui/TopicPage'
 export { T, T as GlossaryTooltip } from './components/ui/GlossaryTooltip'
+export { SubSection } from './components/ui/SubSection'
 
 // ── Search ────────────────────────────────────────────────────────────────────
 export { SearchModal } from './components/search/SearchModal'
