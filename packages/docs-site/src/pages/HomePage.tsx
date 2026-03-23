@@ -42,7 +42,17 @@ export function HomePage() {
                     </Link>
                     <Link to="/components/layout" className="block">
                         <InfoBox color="cyan" title="Layout">
-                            AppLayout, Sidebar, TableOfContents, BackToTop
+                            AppLayout, Sidebar, TopicPage, TableOfContents
+                        </InfoBox>
+                    </Link>
+                    <Link to="/theme" className="block">
+                        <InfoBox color="teal" title="Theme & Context">
+                            ThemeProvider, StudyProvider, SiteConfig, 다크 모드
+                        </InfoBox>
+                    </Link>
+                    <Link to="/components/d3-dsl" className="block">
+                        <InfoBox color="indigo" title="D3 DSL">
+                            createD3Theme, addNode, addArrow, addLabel, addLegend
                         </InfoBox>
                     </Link>
                 </CardGrid>

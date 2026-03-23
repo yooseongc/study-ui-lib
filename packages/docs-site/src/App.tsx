@@ -6,6 +6,8 @@ import { ColorsPage } from './pages/ColorsPage'
 import { UIComponentsPage } from './pages/UIComponentsPage'
 import { VizComponentsPage } from './pages/VizComponentsPage'
 import { LayoutPage } from './pages/LayoutPage'
+import { ThemePage } from './pages/ThemePage'
+import { D3DslPage } from './pages/D3DslPage'
 
 export function App() {
     return (
@@ -17,6 +19,8 @@ export function App() {
                 <Route path="components/ui" element={<UIComponentsPage />} />
                 <Route path="components/viz" element={<VizComponentsPage />} />
                 <Route path="components/layout" element={<LayoutPage />} />
+                <Route path="theme" element={<ThemePage />} />
+                <Route path="components/d3-dsl" element={<D3DslPage />} />
             </Route>
         </Routes>
     )

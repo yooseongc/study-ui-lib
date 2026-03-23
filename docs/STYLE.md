@@ -21,7 +21,6 @@
 | `text-xl` | 20px | 섹션 제목 |
 | `text-2xl` | 24px | 페이지 제목 |
 | `text-3xl` | 30px | 대제목 |
-| `text-4xl` | 36px | 히어로 텍스트 |
 
 ### 폰트 굵기
 
@@ -29,7 +28,7 @@
 |--------|------|
 | 400 (normal) | 본문 |
 | 500 (medium) | 소제목, 강조 텍스트 |
-| 600 (semibold) | 섹션 제목 |
+| 600 (semibold) | 섹션 제목, 토픽 번호 라벨 |
 | 700 (bold) | 페이지 제목, 강한 강조 |
 
 ### 한글/영문 혼용 가이드
@@ -48,6 +47,12 @@
 | `VM_READ`, `GFP_KERNEL` | '읽기 가능', '실행 가능' |
 | `192.168.1.0/24`, `RT 1~99` | '프로세스 복제', '메모리 관리' |
 
+**컴포넌트별 적용:**
+- `StatCard` — value에 CJK 문자 포함 시 자동으로 `font-sans` 전환
+- `InfoTable` — 기본 `font-sans`, 컬럼별 `mono: true`로 명시 가능
+- `GlossaryTooltip` — term에 CJK 문자 포함 시 자동으로 `font-sans` 전환
+- `TopicHeader` — 토픽 번호만 `font-semibold`, 부제목은 `font-sans`
+
 ## 2. 색상 팔레트 (Colors)
 
 ### oklch 기반 시맨틱 색상
@@ -56,15 +61,28 @@
 |------|----------|-----------|------|
 | `text` | oklch(92% 0 0) | oklch(18% 0 0) | 기본 텍스트 |
 | `textMuted` | oklch(63% 0 0) | oklch(40% 0 0) | 보조 텍스트 |
-| `textDim` | oklch(62% 0 0) | oklch(55% 0 0) | 약한 텍스트 |
-| `border` | oklch(48% 0 0) | oklch(82% 0 0) | 테두리 |
+| `textDim` | oklch(50% 0 0) | oklch(65% 0 0) | 비활성/힌트 텍스트 |
+| `border` | oklch(38% 0 0) | oklch(82% 0 0) | 테두리 |
 | `link` | oklch(32% 0 0) | oklch(80% 0 0) | 링크/구분선 |
 | `bg` | oklch(16% 0 0) | oklch(99% 0 0) | 배경 |
 | `bgCard` | oklch(22% 0 0) | oklch(96% 0 0) | 카드 배경 |
 
-### 컴포넌트 색상 (8색 × Fill/Stroke/Text)
-- blue (H≈250), indigo (H≈270), purple (H≈295), pink (H≈320)
-- red (H≈25), amber (H≈65), green (H≈145), cyan (H≈200)
+Dark 모드 명도 위계: `text(92) > textMuted(63) > textDim(50) > border(38) > link(32) > bgCard(22) > bg(16)`
+
+### D3 시각화 색상 (8색 x Fill/Stroke/Text)
+
+| 색상 | Hue | 용도 예 |
+|------|-----|--------|
+| blue | H≈250 | 기본 강조, 프로세스 |
+| indigo | H≈270 | 보조 강조 |
+| purple | H≈295 | 메모리 관련 |
+| pink | H≈320 | 핑크 계열 |
+| red | H≈25 | 에러, 위험 |
+| amber | H≈65 | 경고, 주의 |
+| green | H≈145 | 성공, 완료 |
+| cyan | H≈200 | 네트워크 |
+
+각 색상은 `{color}Fill` (배경, 낮은 채도), `{color}Stroke` (테두리, 높은 채도), `{color}Text` (라벨, 중간 채도) 3종 세트로 제공.
 
 ### Tailwind 컴포넌트 색상 (15색)
 InfoBox, StatCard 등에서 사용:
@@ -76,7 +94,7 @@ Tailwind 기본 스케일 사용:
 - `p-1` (4px) ~ `p-8` (32px)
 - 컴포넌트 내부 패딩: `p-4` (16px) ~ `p-6` (24px)
 - 컴포넌트 간 간격: `space-y-4` (16px) ~ `space-y-8` (32px)
-- 섹션 간 간격: `mb-8` (32px) ~ `mb-12` (48px)
+- 섹션 간 간격: `space-y-14` (56px) — TopicPage 기본값
 
 ## 4. 레이아웃 (Layout)
 
@@ -92,23 +110,79 @@ Tailwind 기본 스케일 사용:
 | `md:` | 768px+ | 2단, 사이드바 표시 |
 | `xl:` | 1280px+ | 3단, TOC 표시 |
 
+### 토픽 페이지 구조
+```tsx
+<TopicPage topicId="01-overview" learningItems={[...]}>
+    <Section id="s1" title="1.1 제목">...</Section>
+    <Section id="s2" title="1.2 제목">...</Section>
+</TopicPage>
+```
+TopicPage가 자동으로 TopicHeader + LearningCard + TopicNavigation을 구성합니다.
+
 ## 5. 다크 모드 (Dark Mode)
 
-- `ThemeProvider`로 앱 래핑
+- `ThemeProvider`로 앱 최상위 래핑
 - `<html>` 요소에 `dark` 클래스 토글
-- localStorage에 `theme` 키로 상태 저장
+- localStorage `theme` 키로 상태 저장 (SSR 안전: try-catch)
 - oklch 색상 체계로 일관된 명도(L) 반전
+- `useTheme()` — `{ theme, toggle }` 반환
+- `useIsDark()` — boolean 반환
 
 ## 6. D3 시각화 스타일
 
 ### D3Theme 시스템
-- `createD3Theme(isDark)` 함수로 테마 객체 생성
-- 폰트: sans (Pretendard Variable), mono (JetBrains Mono)
-- 크기 스케일: sm (11px), base (13px), lg (15px), xl (18px)
-- D3 헬퍼 함수로 일관된 스타일 자동 적용
+
+```typescript
+const theme = createD3Theme(isDark)
+// theme.colors  — themeColors(isDark) 결과
+// theme.fonts   — { sans, mono, size: { sm, base, lg, xl } }
+// theme.spacing — { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 }
+// theme.border  — { radius: 6, width: 1 }
+```
+
+### D3 DSL 헬퍼 함수
+
+```typescript
+// 테마 적용 텍스트
+addLabel(svg, 'Process', theme, { x: 50, y: 50, font: 'sans', size: 'lg' })
+
+// 테마 적용 박스
+addNode(svg, theme, { x: 10, y: 10, width: 200, height: 40, fill: theme.colors.blueFill, label: 'Kernel' })
+
+// 테마 적용 화살표
+addArrow(svg, theme, { from: [100, 50], to: [100, 150], color: theme.colors.link, label: 'syscall' })
+
+// 범례
+addLegend(svg, [{ label: 'User', color: c.blueStroke }, { label: 'Kernel', color: c.greenStroke }], theme, { x: 10, y: 10 })
+```
 
 ### D3 색상 규칙
 - `themeColors(isDark)` 함수에서 Fill/Stroke/Text 3종 세트 사용
+- `createColorMap(colors, ['blue', 'green'])` — 색상 키로 일괄 매핑
 - Fill: 배경 (낮은 채도)
 - Stroke: 테두리 (높은 채도)
 - Text: 라벨 텍스트 (중간 채도)
+
+## 7. Context 시스템
+
+### ThemeProvider
+앱 최상위에서 `<ThemeProvider>`로 래핑. Provider 없이 `useTheme()` 호출 시 에러 throw.
+
+### StudyProvider
+`<StudyProvider config={siteConfig}>`로 사이트 설정 주입. 필요한 컴포넌트:
+AppLayout, Sidebar, SearchModal, TopicPage, TopicHeader, TopicNavigation, LearningCard, GlossaryTooltip
+
+```typescript
+const siteConfig: SiteConfig = {
+    name: 'Project Name',
+    subtitle: 'Description',
+    topics: [...],          // Topic[] — 토픽 목록
+    glossary: {
+        entries: [...],     // GlossaryEntry[] — 용어 목록
+        categoryLabels: {}, // Record<string, string> — 카테고리 한글 라벨
+        categoryColors: {}, // Record<string, string> — 카테고리 Tailwind 클래스
+    },
+    searchIndex: [...],     // SectionEntry[] — 섹션 검색 인덱스
+    footerLinks: [...],     // FooterLink[] — 사이드바 하단 링크
+}
+```
