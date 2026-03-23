@@ -121,4 +121,20 @@
 - [x] topic02 직접 테이블 2개 → InfoTable 교체
 - [x] 빌드 성공 + 커밋/푸시 완료
 
-## Sprint 7: network-study 통합 — 대기
+## Sprint 7: network-study 통합 — 완료 (2026-03-24)
+
+- [x] git submodule 추가 + tsconfig path alias + Vite resolve alias
+- [x] Tailwind @source 경로 추가
+- [x] SiteConfig + StudyProvider 래핑 (App.tsx)
+- [x] 23개 로컬 컴포넌트/hook/context 파일 삭제 → @study-ui/components 교체
+- [x] concepts/ D3 시각화 컴포넌트 import 경로 교체
+- [x] font-mono 스타일 가이드 위반 수정 (Glossary, Home, 토픽 부제목 15곳)
+- [x] 빌드 성공 + CI 통과
+
+## TopicHeader / TopicPage 추가 — 완료 (2026-03-24)
+
+- [x] TopicHeader 컴포넌트: topicId → StudyConfig에서 번호/제목/부제목/설명 자동 렌더링
+- [x] TopicPage 컴포넌트: TopicHeader + LearningCard + children + TopicNavigation 래핑
+- [x] kernel-study 13개 토픽 적용 + CI 통과
+- [x] network-study 15개 토픽 적용 + CI 통과
+- [x] docs-site LayoutPage에 쇼케이스 추가
