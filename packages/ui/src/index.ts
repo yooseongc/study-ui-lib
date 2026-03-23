@@ -47,6 +47,8 @@ export { InlineCode } from './components/ui/InlineCode'
 export { SourceRef } from './components/ui/SourceRef'
 export { TopicNavigation } from './components/ui/TopicNavigation'
 export { LearningCard } from './components/ui/LearningCard'
+export { TopicHeader } from './components/ui/TopicHeader'
+export { TopicPage } from './components/ui/TopicPage'
 export { T, T as GlossaryTooltip } from './components/ui/GlossaryTooltip'
 
 // ── Search ────────────────────────────────────────────────────────────────────
