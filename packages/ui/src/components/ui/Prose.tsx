@@ -1,5 +1,12 @@
-import type { ReactNode } from 'react'
+import type { ElementType, ReactNode } from 'react'
 
-export function Prose({ children, className = '' }: { children: ReactNode; className?: string }) {
-    return <p className={`text-gray-600 dark:text-gray-400 leading-relaxed text-sm ${className}`}>{children}</p>
+interface ProseProps {
+    children: ReactNode
+    className?: string
+    /** HTML tag to render. Default: 'p' */
+    as?: ElementType
+}
+
+export function Prose({ children, className = '', as: Tag = 'p' }: ProseProps) {
+    return <Tag className={`text-gray-600 dark:text-gray-400 leading-relaxed text-sm ${className}`}>{children}</Tag>
 }
