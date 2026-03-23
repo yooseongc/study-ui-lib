@@ -138,3 +138,12 @@
 - [x] kernel-study 13개 토픽 적용 + CI 통과
 - [x] network-study 15개 토픽 적용 + CI 통과
 - [x] docs-site LayoutPage에 쇼케이스 추가
+
+## 문서화 개선 — 완료 (2026-03-24)
+
+- [x] README.md 작성 (프로젝트 소개, 컴포넌트 목록, 설치 가이드)
+- [x] docs/STYLE.md 현행화 (oklch 값, TopicPage, D3 DSL, Context 시스템)
+- [x] docs-site ThemePage (ThemeProvider, StudyProvider, SiteConfig, 의존성 표)
+- [x] docs-site D3DslPage (createD3Theme, addNode/Arrow/Label/Legend, Before/After 비교)
+- [x] docs-site HomePage에 Theme & D3 DSL 링크 추가
+- [x] docs-site siteConfig에 Theme, D3 DSL 토픽 추가
