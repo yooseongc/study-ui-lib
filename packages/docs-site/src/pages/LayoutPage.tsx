@@ -36,6 +36,27 @@ const siteConfigCode = `const siteConfig: SiteConfig = {
     ],
 }`
 
+const topicPageCode = `// Before: 각 토픽 페이지에서 반복
+<div className="max-w-4xl mx-auto px-6 py-10 space-y-14">
+    <header className="space-y-3">
+        <p>Topic 01</p>
+        <h1>리눅스 커널 개요</h1>
+        <p>Linux Kernel Overview</p>
+        <p>커널은 하드웨어와...</p>
+    </header>
+    <LearningCard topicId="01-overview" items={[...]} />
+    ...sections...
+    <TopicNavigation topicId="01-overview" />
+</div>
+
+// After: TopicPage로 통합
+<TopicPage topicId="01-overview" learningItems={[
+    '커널이 하는 일과 유저/커널 공간의 경계를 이해합니다',
+    '시스템 콜이 어떻게 유저 프로그램과 커널을 연결하는지 배웁니다',
+]}>
+    ...sections...
+</TopicPage>`
+
 export function LayoutPage() {
     return (
         <div className="max-w-4xl mx-auto px-6 py-10 space-y-10">
@@ -66,6 +87,22 @@ export function LayoutPage() {
                     모바일에서는 사이드바가 오버레이 드로어로 동작합니다.
                 </Alert>
                 <CodeBlock code={appLayoutCode} language="tsx" filename="App.tsx" />
+            </Section>
+
+            <Section id="topic-page" title="TopicPage / TopicHeader">
+                <Prose>
+                    토픽 페이지의 공통 구조(헤더, LearningCard, 하단 네비게이션)를 자동으로 구성합니다.
+                    topicId만 전달하면 StudyConfig에서 번호, 제목, 부제목, 설명을 가져옵니다.
+                </Prose>
+                <CardGrid cols={2}>
+                    <InfoBox color="blue" title="TopicHeader">
+                        Topic 번호, 제목, 부제목, 설명을 자동 렌더링. topicId만 전달.
+                    </InfoBox>
+                    <InfoBox color="green" title="TopicPage">
+                        TopicHeader + LearningCard + children + TopicNavigation 전체 래핑.
+                    </InfoBox>
+                </CardGrid>
+                <CodeBlock code={topicPageCode} language="tsx" filename="TopicPage 사용 전/후" />
             </Section>
 
             <Section id="study-provider" title="StudyProvider">
