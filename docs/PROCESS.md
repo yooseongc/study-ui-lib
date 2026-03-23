@@ -107,4 +107,18 @@
 - [x] pnpm install + typecheck + vite build 통과
 - [x] lint 통과 (eslint globalIgnores dist 수정)
 
-## Sprint 7: 소비 프로젝트 통합 — 대기
+## Sprint 7: kernel-study 통합 — 완료 (2026-03-23)
+
+- [x] git submodule 추가 + tsconfig path alias + Vite resolve alias
+- [x] Tailwind @source 경로 추가
+- [x] SiteConfig + StudyProvider 래핑 (App.tsx)
+- [x] 22개 로컬 컴포넌트/hook/context 파일 삭제 → @study-ui/components 교체
+- [x] concepts/ D3 시각화 컴포넌트 import 경로 교체
+- [x] font-mono 스타일 가이드 위반 수정 (테이블 헤더/셀, 카드 텍스트)
+- [x] 단순 카드 → InfoBox/CardGrid 교체 (topic01, 03, 05)
+- [x] InfoTable 확장 (TableColumn, striped, mono, align, ReactNode 셀)
+- [x] topic01 직접 테이블 2개 → InfoTable 교체
+- [x] topic02 직접 테이블 2개 → InfoTable 교체
+- [x] 빌드 성공 + 커밋/푸시 완료
+
+## Sprint 7: network-study 통합 — 대기
