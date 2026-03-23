@@ -52,6 +52,45 @@ const infoTableCode = `const columns: TableColumn[] = [
     ]}
 />`
 
+const glossaryCode = `import { T } from '@study-ui/components'
+
+// 인라인 사용 — StudyProvider glossary에서 자동 매칭
+<Prose>
+    <T term="TCP" />는 신뢰성 있는 전송 프로토콜입니다.
+    <T term="시스템 콜" /> 인터페이스를 통해 커널과 통신합니다.
+</Prose>`
+
+const learningCardCode = `import { LearningCard } from '@study-ui/components'
+
+// TopicPage 내부에서는 learningItems prop으로 전달
+<TopicPage topicId="01-overview" learningItems={[
+    '커널의 역할과 구조를 이해합니다',
+    '유저/커널 공간의 경계를 학습합니다',
+]}>
+    ...
+</TopicPage>
+
+// 독립 사용 시
+<LearningCard topicId="01-overview" items={[...]} />`
+
+const extendingCode = `// className prop으로 기본 스타일 확장
+<Alert variant="tip" className="border-2">
+    두꺼운 테두리 알림
+</Alert>
+
+<Section id="custom" title="제목" className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+    커스텀 배경의 섹션
+</Section>
+
+<InfoTable
+    headers={['이름', '값']}
+    rows={[...]}
+    className="max-w-md"          // 테이블 너비 제한
+    rowClassName={(_, i) =>        // 짝수 행 강조
+        i % 2 === 0 ? 'bg-blue-50 dark:bg-blue-950/20' : ''
+    }
+/>`
+
 export function UIComponentsPage() {
     return (
         <div className="max-w-4xl mx-auto px-6 py-10 space-y-10">
@@ -157,6 +196,39 @@ export function UIComponentsPage() {
                     <InfoBox color="sky">cols=3 — 항목 2</InfoBox>
                     <InfoBox color="sky">cols=3 — 항목 3</InfoBox>
                 </CardGrid>
+            </Section>
+
+            <Section id="glossary-tooltip" title="GlossaryTooltip (T)">
+                <Prose>
+                    용어에 마우스를 올리면 정의를 보여주는 인라인 툴팁입니다.
+                    StudyProvider의 glossary.entries에서 자동으로 용어를 찾습니다.
+                    CJK 문자가 포함된 term은 자동으로 font-sans로 전환됩니다.
+                </Prose>
+                <CodeBlock code={glossaryCode} language="tsx" filename="GlossaryTooltip.tsx" />
+                <Alert variant="info" title="별칭">
+                    <code className="font-mono text-sm">T</code>와 <code className="font-mono text-sm">GlossaryTooltip</code> 모두 export됩니다.
+                    짧은 <code className="font-mono text-sm">{'<T term="TCP" />'}</code> 형태를 권장합니다.
+                </Alert>
+            </Section>
+
+            <Section id="learning-card" title="LearningCard">
+                <Prose>
+                    토픽 페이지 상단에 "이 토픽에서 배우는 것" 목록을 표시합니다.
+                    TopicPage 내부에서 자동 사용되지만, 독립적으로도 활용 가능합니다.
+                    선수 지식(prerequisites)이 있으면 함께 표시합니다.
+                </Prose>
+                <CodeBlock code={learningCardCode} language="tsx" filename="LearningCard.tsx" />
+            </Section>
+
+            <Section id="extending" title="컴포넌트 확장">
+                <Prose>
+                    대부분의 컴포넌트는 <code className="font-mono text-sm">className</code> prop을 지원합니다.
+                    Tailwind 클래스를 추가하여 기본 스타일을 확장할 수 있습니다.
+                </Prose>
+                <CodeBlock code={extendingCode} language="tsx" filename="extending.tsx" />
+                <Alert variant="tip" title="className 지원 컴포넌트">
+                    Alert, Section, Prose, StatCard, InlineCode, SourceRef, CodeBlock, InfoTable, CardGrid, SubSection
+                </Alert>
             </Section>
         </div>
     )

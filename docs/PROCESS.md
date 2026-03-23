@@ -147,3 +147,55 @@
 - [x] docs-site D3DslPage (createD3Theme, addNode/Arrow/Label/Legend, Before/After 비교)
 - [x] docs-site HomePage에 Theme & D3 DSL 링크 추가
 - [x] docs-site siteConfig에 Theme, D3 DSL 토픽 추가
+
+## kernel-study D3 시각화 font-family → D3 DSL theme 마이그레이션 — 완료 (2026-03-24)
+
+- [x] 15개 D3 시각화 컴포넌트에서 하드코딩된 font-family 문자열을 createD3Theme의 theme.fonts.sans / theme.fonts.mono로 교체
+- [x] 대상 파일: DeferredWorkFlow, XdpVsNormalDiagram, EbpfPipelineDiagram, NetworkBottleneckChart, SlubViz, SubsystemGraph, BuddyAllocatorViz, CfsTreeViz, RingDiagram, CgroupTreeViz, ProcTreeChart, LockComparisonChart, KernelArchDiagram, ProcessStateDiagram, NetworkLayerDiagram
+- [x] createD3Theme import 추가 및 render 함수 내 theme 객체 생성
+- [x] RingDiagram 변수명 충돌 해결 (theme → d3Theme, 내부 ringTheme과 분리)
+- [x] tsc + vite build 통과
+- [x] DriverTreeChart, SwitchCostChart 잔여 하드코딩 font-family → theme.fonts.sans 교체 (2026-03-24)
+
+## network-study D3 시각화 font-family → D3 DSL theme 마이그레이션 — 완료 (2026-03-24)
+
+- [x] 10개 D3 시각화 컴포넌트에서 하드코딩된 FONT/MONO 상수를 createD3Theme의 theme.fonts.sans / theme.fonts.mono로 교체
+- [x] 대상 파일: ArpFlowDiagram, CertificateChainDiagram, IprouteFlowDiagram, GslbDiagram, TrafficFlowDiagram, HomeVsEnterprise, EastWestNorthSouth, DevicePlacementDiagram, NetworkTiersDiagram, EncapsulationDiagram
+- [x] D3 콜백 패턴: render 함수 상단에 createD3Theme(isDark) 호출
+- [x] React JSX 패턴 (ArpFlowDiagram): 각 서브 컴포넌트에서 useIsDark + createD3Theme 호출
+- [x] EncapsulationDiagram: 인라인 fontFamily 문자열 → theme.fonts.sans 교체
+- [x] npm run build 통과
+
+## CardGrid 4열 반응형 breakpoint 수정 — 완료 (2026-03-24)
+
+- [x] 4열 모드: `grid-cols-2 sm:grid-cols-4` → `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4` (중간 breakpoint 추가)
+- [x] typecheck 통과
+
+## docs-site 추가 페이지 구현 — 완료 (2026-03-24)
+
+- [x] SpacingPage (`/style-guide/spacing`): 패딩/마진 스케일, 요소 간 간격, 컴포넌트별 규칙, D3 spacing 토큰, 라이브 비교
+- [x] SearchPage (`/components/search`): SearchModal 개요, 검색 기능 3종, 키보드 단축키, 점수 체계, SiteConfig 연동, 성능 최적화
+- [x] HooksPage (`/customization/hooks`): useAnimationStep, useD3, useThree, useTheme, useIsDark, useStudyConfig — API 테이블, 코드 예시
+- [x] App.tsx에 3개 라우트 추가
+- [x] siteConfig에 3개 토픽 추가 (style-spacing, comp-search, custom-hooks)
+- [x] HomePage에 Spacing, SearchModal, Hooks 링크 카드 추가
+- [x] typecheck + build 통과
+
+## docs/PAGES.md 현행화 — 완료 (2026-03-24)
+
+- [x] 구현 완료 페이지 11개에 ✅ 표시
+- [x] ThemePage 독립 섹션으로 반영 (`/theme`)
+- [x] 미구현 4개 페이지를 별도 섹션으로 분리 (우선도 낮음, 기존 페이지에서 커버)
+- [x] 삭제: `/getting-started` (Quick Start가 HomePage에 통합)
+
+## docs-site 컴포넌트 데모 보완 & 확장 가이드 — 완료 (2026-03-24)
+
+- [x] UIComponentsPage에 GlossaryTooltip(T) 섹션 추가 (사용법, 별칭, CJK 자동 font-sans)
+- [x] UIComponentsPage에 LearningCard 섹션 추가 (TopicPage 연동, 독립 사용)
+- [x] UIComponentsPage에 컴포넌트 확장 섹션 추가 (className prop, rowClassName, 지원 컴포넌트 목록)
+- [x] PAGES.md: 미구현 4개 페이지를 "기존 페이지에서 커버" 상태로 전환
+- [x] typecheck + build 통과
+
+## 확인된 잔여 이슈
+
+- [ ] 한국어 UI 텍스트 하드코딩 — 10+ 파일, 25+ 문자열 (i18n 필요 시 추후)

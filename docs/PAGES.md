@@ -1,26 +1,28 @@
 # 문서 사이트 페이지 구조
 
 ## 홈
-- `/` — 개요, 디자인 철학, 빠른 시작
-
-## 시작하기
-- `/getting-started` — 설치 (git submodule, pnpm, 설정)
+- `/` — 개요, 컴포넌트 카탈로그, 빠른 시작 ✅
 
 ## Style Guide
-- `/style-guide/typography` — 폰트 체계 (Pretendard Variable, JetBrains Mono, 한글/영문 혼용, 크기/굵기 스케일)
-- `/style-guide/colors` — oklch 색상 팔레트 (시맨틱 색상, 컴포넌트 색상 15종, D3 시각화 색상, Dark/Light 비교)
-- `/style-guide/spacing` — 간격/여백 체계 (Tailwind 스케일, 컴포넌트 간격 규칙)
-- `/style-guide/layout` — 레이아웃 패턴 (3단 레이아웃, 반응형 breakpoint, 모바일 적응)
-- `/style-guide/dark-mode` — 다크 모드 가이드 (ThemeProvider, oklch 전환 원리, 컴포넌트별 비교)
+- `/style-guide/typography` — 폰트 체계 (Pretendard Variable, JetBrains Mono, 한글/영문 혼용, 크기/굵기 스케일) ✅
+- `/style-guide/colors` — oklch 색상 팔레트 (시맨틱 색상, 컴포넌트 색상 15종, D3 시각화 색상, Dark/Light 비교) ✅
+- `/style-guide/spacing` — 간격/여백 체계 (Tailwind 스케일, 컴포넌트 간격 규칙, D3 spacing 토큰) ✅
 
 ## Components
-- `/components/layout` — AppLayout, Sidebar, TableOfContents, BackToTop
-- `/components/ui` — Alert, InfoBox, StatCard, Section, Prose, InfoTable, CardGrid, InlineCode, LearningCard, TopicNavigation, GlossaryTooltip, SourceRef
-- `/components/viz` — CodeBlock, D3Container, MermaidDiagram, WebGLCanvas, AnimatedDiagram
-- `/components/d3-dsl` — D3 DSL 헬퍼 시스템 (D3Theme, addNode, addArrow, addLabel, addLegend)
-- `/components/search` — SearchModal
+- `/components/layout` — AppLayout, Sidebar, TableOfContents, BackToTop, TopicPage, TopicHeader ✅
+- `/components/ui` — Alert, InfoBox, StatCard, Section, Prose, InfoTable, CardGrid, InlineCode, SourceRef ✅
+- `/components/viz` — CodeBlock, MermaidDiagram, AnimatedDiagram ✅
+- `/components/d3-dsl` — D3 DSL 헬퍼 시스템 (createD3Theme, addNode, addArrow, addLabel, addLegend) ✅
+- `/components/search` — SearchModal (검색 기능, 키보드 단축키, 점수 체계, SiteConfig 연동) ✅
+
+## Theme & Context
+- `/theme` — ThemeProvider, StudyProvider, SiteConfig, useTheme, useIsDark, 다크 모드 ✅
 
 ## Customization
-- `/customization/study-provider` — StudyProvider 설정, SiteConfig 구조
-- `/customization/hooks` — useAnimationStep, useD3, useThree
-- `/customization/extending` — 컴포넌트 확장/오버라이드 가이드
+- `/customization/hooks` — useAnimationStep, useD3, useThree, useTheme, useIsDark, useStudyConfig ✅
+
+## 기존 페이지에서 커버 (별도 페이지 불필요)
+- 레이아웃 패턴 → LayoutPage (`/components/layout`) 반응형 섹션에서 커버
+- 다크 모드 가이드 → ThemePage (`/theme`) 다크 모드 동작 섹션에서 커버
+- StudyProvider 설정 → ThemePage (`/theme`) + LayoutPage에서 커버
+- 컴포넌트 확장 → UIComponentsPage (`/components/ui`) 확장 섹션에서 커버

@@ -14,7 +14,7 @@ export function HomePage() {
             </div>
 
             <Section id="style-guide" title="Style Guide">
-                <CardGrid cols={2}>
+                <CardGrid cols={3}>
                     <Link to="/style-guide/typography" className="block">
                         <InfoBox color="blue" title="Typography">
                             폰트 패밀리, 크기 스케일, 굵기, 한글/영문 혼용 가이드
@@ -23,6 +23,11 @@ export function HomePage() {
                     <Link to="/style-guide/colors" className="block">
                         <InfoBox color="purple" title="Colors">
                             oklch 기반 색상 팔레트, 시맨틱 색상, Dark/Light 모드
+                        </InfoBox>
+                    </Link>
+                    <Link to="/style-guide/spacing" className="block">
+                        <InfoBox color="green" title="Spacing">
+                            간격/여백 체계, 컴포넌트 간격 규칙, D3 spacing 토큰
                         </InfoBox>
                     </Link>
                 </CardGrid>
@@ -53,6 +58,16 @@ export function HomePage() {
                     <Link to="/components/d3-dsl" className="block">
                         <InfoBox color="indigo" title="D3 DSL">
                             createD3Theme, addNode, addArrow, addLabel, addLegend
+                        </InfoBox>
+                    </Link>
+                    <Link to="/components/search" className="block">
+                        <InfoBox color="rose" title="SearchModal">
+                            토픽, 용어, 섹션 통합 검색 (⌘K)
+                        </InfoBox>
+                    </Link>
+                    <Link to="/customization/hooks" className="block">
+                        <InfoBox color="orange" title="Hooks">
+                            useAnimationStep, useD3, useThree, useTheme
                         </InfoBox>
                     </Link>
                 </CardGrid>
