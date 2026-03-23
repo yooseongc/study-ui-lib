@@ -36,6 +36,7 @@
 - Pretendard Variable은 한글과 영문 모두에 최적화된 가변 폰트
 - CJK 텍스트의 행간(line-height)은 1.7~1.8 권장 (Tailwind `leading-relaxed` 이상)
 - 자간(letter-spacing)은 기본값 유지 (한글에서 추가 자간은 가독성 저하)
+- **범용 컴포넌트에서 `font-mono` 사용 금지** — 한글 데이터가 들어올 수 있는 컴포넌트(InfoTable, StatCard 등)는 기본을 `font-sans`로 설정. mono가 필요한 컬럼만 `mono: true`로 명시
 
 ## 2. 색상 팔레트 (Colors)
 

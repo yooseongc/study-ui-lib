@@ -10,6 +10,7 @@ import {
     SourceRef,
     CodeBlock,
 } from '@study-ui/components'
+import type { TableColumn } from '@study-ui/components'
 
 const alertCode = `<Alert variant="tip" title="팁">유용한 정보입니다</Alert>
 <Alert variant="warning">주의가 필요합니다</Alert>
@@ -26,6 +27,30 @@ const statCardCode = `<CardGrid cols={4}>
     <StatCard title="CPU" value="73%" color="amber" />
     <StatCard title="에러" value="0" color="red" />
 </CardGrid>`
+
+const advancedColumns: TableColumn[] = [
+    { header: '시스템 콜', mono: true, nowrap: true, cellClassName: 'text-blue-600 dark:text-blue-400 font-medium' },
+    { header: '번호', align: 'text-right', mono: true, cellClassName: 'text-gray-500 dark:text-gray-400' },
+    { header: '설명', cellClassName: 'text-gray-700 dark:text-gray-300' },
+    { header: '관련 개념', cellClassName: 'text-gray-500 dark:text-gray-400' },
+]
+
+const infoTableCode = `const columns: TableColumn[] = [
+    { header: '시스템 콜', mono: true, nowrap: true,
+      cellClassName: 'text-blue-600 dark:text-blue-400 font-medium' },
+    { header: '번호', align: 'text-right', mono: true },
+    { header: '설명' },
+    { header: '관련 개념' },
+]
+
+<InfoTable
+    striped
+    headers={columns}
+    rows={[
+        { cells: ['fork()', '57', '프로세스 복제', '메모리 관리'] },
+        { cells: ['execve()', '59', '프로그램 실행', '파일시스템'] },
+    ]}
+/>`
 
 export function UIComponentsPage() {
     return (
@@ -71,7 +96,14 @@ export function UIComponentsPage() {
             </Section>
 
             <Section id="infotable" title="InfoTable">
-                <Prose>구조화된 데이터를 테이블 형태로 표시합니다.</Prose>
+                <Prose>
+                    구조화된 데이터를 테이블 형태로 표시합니다. 단순 문자열 헤더 또는 컬럼별 세부 설정(정렬, 폰트, 색상)을
+                    지원합니다.
+                </Prose>
+
+                <div className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-widest mb-2">
+                    기본 사용 (string[] 헤더)
+                </div>
                 <InfoTable
                     headers={['시스템 콜', '번호', '설명']}
                     rows={[
@@ -80,6 +112,26 @@ export function UIComponentsPage() {
                         { cells: ['open()', '2', '파일 열기'] },
                         { cells: ['close()', '3', '파일 닫기'] },
                     ]}
+                />
+
+                <div className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-widest mb-2 mt-6">
+                    컬럼 설정 (TableColumn[] 헤더 + striped)
+                </div>
+                <InfoTable
+                    striped
+                    headers={advancedColumns}
+                    rows={[
+                        { cells: ['fork()', '57', '프로세스 복제', '메모리 관리'] },
+                        { cells: ['execve()', '59', '프로그램 실행', '파일시스템'] },
+                        { cells: ['wait4()', '61', '자식 종료 대기', '스케줄러'] },
+                        { cells: ['mmap()', '9', '메모리 매핑', '메모리 관리'] },
+                    ]}
+                />
+
+                <CodeBlock
+                    code={infoTableCode}
+                    language="tsx"
+                    filename="InfoTable — 컬럼 설정 예제"
                 />
             </Section>
 
