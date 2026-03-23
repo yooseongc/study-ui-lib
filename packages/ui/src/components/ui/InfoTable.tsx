@@ -5,9 +5,11 @@ export interface TableRow {
 interface InfoTableProps {
     headers: string[]
     rows: TableRow[]
+    mono?: boolean
 }
 
-export function InfoTable({ headers, rows }: InfoTableProps) {
+export function InfoTable({ headers, rows, mono = false }: InfoTableProps) {
+    const fontClass = mono ? 'font-mono' : ''
     return (
         <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
             <table className="w-full text-sm">
@@ -16,7 +18,7 @@ export function InfoTable({ headers, rows }: InfoTableProps) {
                         {headers.map((h, i) => (
                             <th
                                 key={i}
-                                className="px-4 py-2.5 text-left font-semibold text-gray-700 dark:text-gray-300 font-mono text-xs"
+                                className={`px-4 py-2.5 text-left font-semibold text-gray-700 dark:text-gray-300 text-xs ${fontClass}`}
                             >
                                 {h}
                             </th>
@@ -32,7 +34,7 @@ export function InfoTable({ headers, rows }: InfoTableProps) {
                             {row.cells.map((cell, ci) => (
                                 <td
                                     key={ci}
-                                    className={`px-4 py-2.5 font-mono text-xs ${
+                                    className={`px-4 py-2.5 text-xs ${fontClass} ${
                                         ci === 0
                                             ? 'text-blue-600 dark:text-blue-400 font-semibold'
                                             : 'text-gray-600 dark:text-gray-400'

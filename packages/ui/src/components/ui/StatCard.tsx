@@ -72,12 +72,15 @@ const colorMap: Record<StatColor, { border: string; bg: string; title: string; v
     },
 }
 
+const hasCJK = (s: string) => /[\u3000-\u9fff\uac00-\ud7af]/.test(s)
+
 export function StatCard({ title, value, desc, color = 'blue', children, className = '' }: Props) {
     const c = colorMap[color]
+    const valueFont = hasCJK(value) ? 'font-sans' : 'font-mono'
     return (
         <div className={`rounded-xl border ${c.border} ${c.bg} p-4 space-y-1.5 ${className}`}>
             <div className={`text-xs font-semibold uppercase tracking-wide ${c.title}`}>{title}</div>
-            <div className={`text-lg font-bold font-mono ${c.value}`}>{value}</div>
+            <div className={`text-lg font-bold ${valueFont} ${c.value}`}>{value}</div>
             {desc && <div className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{desc}</div>}
             {children}
         </div>

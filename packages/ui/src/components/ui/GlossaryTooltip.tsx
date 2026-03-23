@@ -124,7 +124,7 @@ export function T({ id, children }: Props) {
                 onMouseLeave={scheduleClose}
             >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="font-mono font-semibold text-sm text-gray-900 dark:text-gray-100 leading-snug">
+                    <span className={`${/[\u3000-\u9fff\uac00-\ud7af]/.test(entry.term) ? 'font-sans' : 'font-mono'} font-semibold text-sm text-gray-900 dark:text-gray-100 leading-snug`}>
                         {entry.term}
                         {entry.aliases && entry.aliases.length > 0 && (
                             <span className="ml-1.5 font-normal text-gray-400 dark:text-gray-500 text-xs">
