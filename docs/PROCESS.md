@@ -67,8 +67,8 @@
 
 ### 확인된 잔여 이슈 (LOW / 의도적 보류)
 - [ ] 한국어 UI 텍스트 하드코딩 (i18n 필요 시 추후)
-- [ ] InfoTable 커스텀 셀 렌더링 미지원 (확장 필요 시 추후)
-- [ ] CardGrid 4열 반응형 중간 breakpoint 미적용
+- [x] InfoTable 커스텀 셀 렌더링 → ReactNode 셀, TableColumn 설정 지원 (Sprint 7에서 해결)
+- [x] CardGrid 4열 반응형 중간 breakpoint → `1→2→4` 중간 단계 추가 (2026-03-25 해결)
 
 ## 3회 추가 검토 사이클 — 완료 (2026-03-23)
 
