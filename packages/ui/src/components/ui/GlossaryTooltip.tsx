@@ -161,7 +161,7 @@ export function T({ id, children }: Props) {
                 tabIndex={0}
                 aria-expanded={open}
                 aria-describedby={open ? `glossary-tip-${id}` : undefined}
-                className="border-b border-dotted border-current cursor-help opacity-90 hover:opacity-100 transition-opacity"
+                className="border-b border-dotted border-current cursor-help opacity-90 hover:opacity-100 transition-opacity ml-1 mr-0.5"
                 onMouseEnter={openTooltip}
                 onMouseLeave={scheduleClose}
                 onFocus={openTooltip}
