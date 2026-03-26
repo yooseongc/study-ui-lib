@@ -190,6 +190,17 @@ export function VizComponentsPage() {
                         iframe window의 함수명을 지정하여 일시정지/재개. p5.js noLoop/loop 기본 지원.
                     </InfoBox>
                 </CardGrid>
+                <CardGrid cols={3}>
+                    <InfoBox color="amber" title="전체화면">
+                        Fullscreen API로 캔버스를 전체화면 전환. Escape로 복귀.
+                    </InfoBox>
+                    <InfoBox color="cyan" title="키보드 단축키">
+                        <code className="font-mono text-sm">Ctrl+Enter</code> 재시작, <code className="font-mono text-sm">Space</code> 일시정지/재개
+                    </InfoBox>
+                    <InfoBox color="gray" title="접근성">
+                        모든 버튼에 aria-label, focus-visible 링, error/warn 카운트에 role=status
+                    </InfoBox>
+                </CardGrid>
                 <CodeBlock code={iframeRunnerCode} language="tsx" filename="IframeRunner 사용법" />
                 <Alert variant="info" title="Props">
                     srcdoc을 직접 전달하면 files/libraryUrls/bodyHtml/css는 무시됩니다.
@@ -211,24 +222,40 @@ export function VizComponentsPage() {
                     IframeRunner에 내장되어 있지만, <code className="font-mono text-sm text-blue-600 dark:text-blue-400">useIframeConsole</code> 훅과
                     함께 별도로 사용할 수도 있습니다.
                     레벨별 아이콘/색상, 자동 스크롤, Clear 버튼을 제공합니다.
+                    다크/라이트 모드에서 각각 적절한 색상 대비를 유지합니다 (라이트: text-gray-700/blue-600, 다크: text-gray-300/blue-400).
                 </Prose>
+                <Alert variant="tip" title="접근성">
+                    <code className="font-mono text-sm">role=&quot;log&quot;</code>와 <code className="font-mono text-sm">aria-live=&quot;polite&quot;</code>가
+                    적용되어 스크린리더가 새 콘솔 출력을 자동으로 읽어줍니다.
+                </Alert>
                 <CodeBlock code={consolePanelCode} language="tsx" filename="ConsolePanel 사용법" />
             </Section>
 
             <Section id="code-viewer" title="CodeViewer">
                 <Prose>
                     멀티 파일 코드 뷰어입니다. 파일 탭, 구문 강조(react-syntax-highlighter), 3가지 레이아웃 모드(좌우/상하/코드만),
-                    파일 트리 토글을 지원합니다. runner prop을 전달하면 코드와 실행 결과를 나란히 볼 수 있습니다.
+                    파일 트리 토글, 코드 복사 버튼을 지원합니다. runner prop을 전달하면 코드와 실행 결과를 나란히 볼 수 있습니다.
                 </Prose>
                 <CardGrid cols={3}>
                     <InfoBox color="blue" title="Horizontal">
-                        코드 왼쪽, 러너 오른쪽. 데스크톱 기본 레이아웃.
+                        코드 왼쪽, 러너 오른쪽. 데스크톱 기본 레이아웃. 모바일에서는 자동으로 Vertical로 전환.
                     </InfoBox>
                     <InfoBox color="green" title="Vertical">
                         러너 위, 코드 아래. 좁은 화면에 적합.
                     </InfoBox>
                     <InfoBox color="purple" title="Code Only">
                         러너 없이 코드만 표시. runner prop이 없으면 자동 선택.
+                    </InfoBox>
+                </CardGrid>
+                <CardGrid cols={3}>
+                    <InfoBox color="amber" title="Copy 버튼">
+                        현재 활성 파일의 코드를 클립보드에 복사. 탭 전환 시 상태 리셋.
+                    </InfoBox>
+                    <InfoBox color="cyan" title="다크/라이트 테마">
+                        다크 모드에서는 vscDarkPlus, 라이트 모드에서는 oneLight 테마를 자동 적용.
+                    </InfoBox>
+                    <InfoBox color="gray" title="반응형">
+                        1024px 미만에서 horizontal → vertical 자동 전환. 모바일에서 FileTree 숨김.
                     </InfoBox>
                 </CardGrid>
                 <CodeBlock code={codeViewerCode} language="tsx" filename="CodeViewer 사용법" />
