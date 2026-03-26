@@ -56,10 +56,12 @@ export function IframeRunner({
     showConsole: initialShowConsole = true,
     className = '',
 }: IframeRunnerProps) {
+    const containerRef = useRef<HTMLDivElement>(null)
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const [isRunning, setIsRunning] = useState(true)
     const [key, setKey] = useState(0)
     const [showConsole, setShowConsole] = useState(initialShowConsole)
+    const [isFullscreen, setIsFullscreen] = useState(false)
     const isDark = useIsDark()
     const { entries, clear, errorCount, warnCount } = useIframeConsole()
 
@@ -117,16 +119,46 @@ export function IframeRunner({
         }
     }, [isRunning, pauseFn, resumeFn])
 
+    const toggleFullscreen = useCallback(() => {
+        const el = containerRef.current
+        if (!el) return
+        if (!document.fullscreenElement) {
+            el.requestFullscreen?.().then(() => setIsFullscreen(true)).catch(() => {})
+        } else {
+            document.exitFullscreen?.().then(() => setIsFullscreen(false)).catch(() => {})
+        }
+    }, [])
+
+    // Sync fullscreen state on exit via Escape
+    useEffect(() => {
+        const handler = () => setIsFullscreen(!!document.fullscreenElement)
+        document.addEventListener('fullscreenchange', handler)
+        return () => document.removeEventListener('fullscreenchange', handler)
+    }, [])
+
     useEffect(() => {
         setIsRunning(true)
     }, [key])
 
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            // Only when this component or its children are focused
+            if (!containerRef.current?.contains(document.activeElement) && document.activeElement !== document.body) return
+            if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); restart() }
+            if (e.key === ' ' && e.target === document.body) { e.preventDefault(); togglePause() }
+        }
+        window.addEventListener('keydown', handler)
+        return () => window.removeEventListener('keydown', handler)
+    }, [restart, togglePause])
+
     const doc = buildSrcdoc()
+    const btnClass = 'text-xs font-mono px-2.5 py-1.5 min-h-[32px] rounded bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-pink-500 focus-visible:outline-offset-1'
 
     return (
-        <div className={`flex flex-col w-full ${className}`}>
+        <div ref={containerRef} className={`flex flex-col w-full ${isFullscreen ? 'bg-black' : ''} ${className}`}>
             {/* Iframe */}
-            <div className="relative rounded-t-lg overflow-hidden bg-black dark:bg-black">
+            <div className="relative rounded-t-lg overflow-hidden bg-black">
                 <iframe
                     ref={iframeRef}
                     key={key}
@@ -135,36 +167,31 @@ export function IframeRunner({
                     sandbox={sandbox}
                     allow={allow}
                     className="w-full border-0"
-                    style={{ height: height + 60 }}
+                    style={{ height: isFullscreen ? 'calc(100vh - 140px)' : height + 60 }}
                 />
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-200 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700">
-                <button
-                    onClick={togglePause}
-                    className="text-xs font-mono px-2.5 py-1 rounded bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    aria-label={isRunning ? 'Pause' : 'Resume'}
-                >
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 bg-gray-200 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 flex-wrap">
+                <button onClick={togglePause} className={btnClass} aria-label={isRunning ? 'Pause' : 'Resume'}>
                     {isRunning ? '\u23F8 Pause' : '\u25B6 Resume'}
                 </button>
-                <button
-                    onClick={restart}
-                    className="text-xs font-mono px-2.5 py-1 rounded bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    aria-label="Restart"
-                >
+                <button onClick={restart} className={btnClass} aria-label="Restart (Ctrl+Enter)" title="Ctrl+Enter">
                     Restart
+                </button>
+                <button onClick={toggleFullscreen} className={btnClass} aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}>
+                    {isFullscreen ? '\u2716 Exit' : '\u26F6 Full'}
                 </button>
                 <div className="ml-auto flex items-center gap-2">
                     {errorCount > 0 && (
-                        <span className="text-[10px] text-red-600 dark:text-red-400 font-mono">{errorCount} error{errorCount > 1 ? 's' : ''}</span>
+                        <span className="text-[10px] text-red-600 dark:text-red-400 font-mono" role="status">{errorCount} error{errorCount > 1 ? 's' : ''}</span>
                     )}
                     {warnCount > 0 && (
-                        <span className="text-[10px] text-yellow-600 dark:text-yellow-400 font-mono">{warnCount} warn{warnCount > 1 ? 's' : ''}</span>
+                        <span className="text-[10px] text-yellow-600 dark:text-yellow-400 font-mono" role="status">{warnCount} warn{warnCount > 1 ? 's' : ''}</span>
                     )}
                     <button
                         onClick={() => setShowConsole((v) => !v)}
-                        className={`text-xs font-mono px-2 py-1 rounded transition-colors ${
+                        className={`text-xs font-mono px-2 py-1.5 min-h-[32px] rounded transition-colors focus-visible:outline-2 focus-visible:outline-pink-500 focus-visible:outline-offset-1 ${
                             showConsole
                                 ? 'bg-gray-400 dark:bg-gray-600 text-white'
                                 : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-400 dark:hover:bg-gray-600'
@@ -173,7 +200,7 @@ export function IframeRunner({
                     >
                         Console
                     </button>
-                    <span className="text-[10px] text-gray-500 font-mono">{width}\u00D7{height}</span>
+                    <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">{width}\u00D7{height}</span>
                 </div>
             </div>
 

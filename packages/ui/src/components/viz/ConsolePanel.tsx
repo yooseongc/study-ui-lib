@@ -2,10 +2,10 @@ import { useRef, useEffect } from 'react'
 import type { ConsoleEntry } from '../../hooks/useIframeConsole'
 
 const levelColors: Record<string, string> = {
-    log: 'text-gray-300',
-    info: 'text-blue-400',
-    warn: 'text-yellow-400',
-    error: 'text-red-400',
+    log: 'text-gray-700 dark:text-gray-300',
+    info: 'text-blue-600 dark:text-blue-400',
+    warn: 'text-yellow-700 dark:text-yellow-400',
+    error: 'text-red-600 dark:text-red-400',
 }
 
 const levelIcons: Record<string, string> = {
@@ -39,7 +39,7 @@ export function ConsolePanel({ entries, onClear, height = 128, className = '' }:
                 {onClear && (
                     <button
                         onClick={onClear}
-                        className="text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-mono transition-colors"
+                        className="text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-mono transition-colors focus-visible:outline-2 focus-visible:outline-pink-500"
                         aria-label="Clear console"
                     >
                         Clear

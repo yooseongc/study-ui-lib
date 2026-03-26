@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useIsDark } from '../../hooks/useIsDark'
 import type { FileEntry, FileGroup } from './FileExplorer'
 import { FileExplorer } from './FileExplorer'
 
@@ -34,8 +36,10 @@ export function CodeViewer({
     const [activeTab, setActiveTab] = useState(0)
     const [layout, setLayout] = useState<LayoutMode>(runner ? 'horizontal' : 'code-only')
     const [showFileTree, setShowFileTree] = useState(true)
+    const [copied, setCopied] = useState(false)
     const codeScrollRef = useRef<HTMLDivElement>(null)
     const [canScrollDown, setCanScrollDown] = useState(false)
+    const isDark = useIsDark()
 
     const checkScroll = useCallback(() => {
         const el = codeScrollRef.current
@@ -48,6 +52,18 @@ export function CodeViewer({
         return () => clearTimeout(t)
     }, [activeTab, layout, checkScroll])
 
+    // Auto-switch layout on small screens
+    useEffect(() => {
+        if (!runner) return
+        const mq = window.matchMedia('(max-width: 1023px)')
+        const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+            if (e.matches && layout === 'horizontal') setLayout('vertical')
+        }
+        handler(mq)
+        mq.addEventListener('change', handler)
+        return () => mq.removeEventListener('change', handler)
+    }, [runner]) // eslint-disable-line react-hooks/exhaustive-deps
+
     if (files.length === 0) {
         return (
             <div className="text-center text-gray-400 py-8">
@@ -57,12 +73,20 @@ export function CodeViewer({
     }
 
     const activeFile = files[activeTab]
+    // Control bar ~40px, tab bar ~36px, console header ~32px, console ~128px, margins ~32px = ~268px
     const panelHeight = runnerHeight + 268
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(activeFile.content.trim()).then(() => {
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1500)
+        })
+    }
 
     const layoutBtn = (mode: LayoutMode, icon: string, titleText: string) => (
         <button
             onClick={() => setLayout(mode)}
-            className={`text-xs px-1.5 py-1 rounded transition-colors ${
+            className={`text-xs px-1.5 py-1 rounded transition-colors focus-visible:outline-2 focus-visible:outline-pink-500 ${
                 layout === mode
                     ? 'text-pink-600 dark:text-pink-400 bg-white dark:bg-gray-800'
                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
@@ -74,11 +98,14 @@ export function CodeViewer({
         </button>
     )
 
+    const codeBg = isDark ? '#0d1117' : '#fafbfc'
+    const codeStyle = isDark ? vscDarkPlus : oneLight
+
     const tabBar = (
         <div className="flex items-center bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0">
             <button
                 onClick={() => setShowFileTree((v) => !v)}
-                className={`shrink-0 text-xs px-2 py-2 transition-colors ${
+                className={`shrink-0 text-xs px-2 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-pink-500 ${
                     showFileTree
                         ? 'text-pink-600 dark:text-pink-400'
                         : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
@@ -93,7 +120,7 @@ export function CodeViewer({
                 {files.map((file, i) => (
                     <button
                         key={file.name}
-                        onClick={() => setActiveTab(i)}
+                        onClick={() => { setActiveTab(i); setCopied(false) }}
                         className={`shrink-0 text-xs font-mono px-3 py-2 whitespace-nowrap transition-colors ${
                             i === activeTab
                                 ? 'text-pink-600 dark:text-pink-400 bg-white dark:bg-gray-800 border-b-2 border-pink-500'
@@ -104,13 +131,24 @@ export function CodeViewer({
                     </button>
                 ))}
             </div>
-            {runner && (
-                <div className="shrink-0 flex items-center gap-0.5 px-1.5 py-1 mr-1 rounded-md bg-gray-200 dark:bg-gray-800">
-                    {layoutBtn('horizontal', '\u25EB', 'Side by side')}
-                    {layoutBtn('vertical', '\u2B12', 'Top/bottom')}
-                    {layoutBtn('code-only', '\u25A1', 'Code only')}
-                </div>
-            )}
+            <div className="shrink-0 flex items-center gap-1 mr-1">
+                {/* Copy button */}
+                <button
+                    onClick={handleCopy}
+                    className="text-[10px] px-2 py-1 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors focus-visible:outline-2 focus-visible:outline-pink-500"
+                    aria-label="Copy code"
+                    title="Copy code"
+                >
+                    {copied ? '\u2713 Copied' : 'Copy'}
+                </button>
+                {runner && (
+                    <div className="flex items-center gap-0.5 px-1.5 py-1 rounded-md bg-gray-200 dark:bg-gray-800">
+                        {layoutBtn('horizontal', '\u25EB', 'Side by side')}
+                        {layoutBtn('vertical', '\u2B12', 'Top/bottom')}
+                        {layoutBtn('code-only', '\u25A1', 'Code only')}
+                    </div>
+                )}
+            </div>
         </div>
     )
 
@@ -118,7 +156,7 @@ export function CodeViewer({
     const fileSizeKB = (activeFile.content.length / 1024).toFixed(1)
 
     const codePanel = (
-        <div className="flex-1 relative min-h-0 bg-[#0d1117]">
+        <div className="flex-1 relative min-h-0" style={{ background: codeBg }}>
             {isFileTooLarge ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 px-6 text-center">
                     <p className="text-sm font-mono mb-1">{activeFile.name} ({fileSizeKB} KB)</p>
@@ -133,8 +171,8 @@ export function CodeViewer({
                     >
                         <SyntaxHighlighter
                             language={language}
-                            style={vscDarkPlus}
-                            customStyle={{ margin: 0, borderRadius: 0, background: '#0d1117', fontSize: '0.82rem', minHeight: '100%' }}
+                            style={codeStyle}
+                            customStyle={{ margin: 0, borderRadius: 0, background: codeBg, fontSize: '0.82rem', minHeight: '100%' }}
                             showLineNumbers
                         >
                             {activeFile.content.trim()}
@@ -142,8 +180,10 @@ export function CodeViewer({
                     </div>
                     {canScrollDown && (
                         <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-10">
-                            <div className="h-8 bg-gradient-to-t from-[#0d1117] to-transparent" />
-                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-gray-500 bg-gray-800/80 rounded-full px-2 py-0.5 animate-bounce">
+                            <div className="h-8" style={{ background: `linear-gradient(transparent, ${codeBg})` }} />
+                            <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] rounded-full px-2 py-0.5 animate-bounce ${
+                                isDark ? 'text-gray-500 bg-gray-800/80' : 'text-gray-400 bg-white/80'
+                            }`}>
                                 \u2193 scroll
                             </div>
                         </div>
@@ -154,7 +194,7 @@ export function CodeViewer({
     )
 
     const fileTree = showFileTree ? (
-        <FileExplorer files={files} groups={fileGroups} activeIndex={activeTab} onSelect={setActiveTab} />
+        <FileExplorer files={files} groups={fileGroups} activeIndex={activeTab} onSelect={(i) => { setActiveTab(i); setCopied(false) }} className="hidden sm:flex" />
     ) : null
 
     if (layout === 'horizontal' && runner) {
