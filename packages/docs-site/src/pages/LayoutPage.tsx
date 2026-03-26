@@ -1,5 +1,43 @@
 import { Section, Prose, InfoBox, CardGrid, Alert, CodeBlock } from '@study-ui/components'
 
+const nestedSidebarCode = `import { NestedSidebar } from '@study-ui/components'
+import type { NavSection, NavExtra } from '@study-ui/components'
+
+const sections: NavSection[] = [{
+    label: 'Coding Challenges',
+    groups: [
+        {
+            id: 'creative-coding',
+            label: 'Creative Coding',
+            route: '/category/creative-coding',
+            icon: '\uD83C\uDFA8',
+            count: '25/25',
+            children: [
+                { id: '001_starfield', label: 'Starfield', route: '/challenge/001_starfield', prefix: '001', enabled: true },
+                { id: '004_purple_rain', label: 'Purple Rain', route: '/challenge/004_purple_rain', prefix: '004', enabled: true },
+                { id: '999_future', label: 'Future Challenge', route: '/challenge/999', prefix: '999', enabled: false, disabledLabel: 'TBD' },
+            ],
+        },
+    ],
+}]
+
+const extras: NavExtra[] = [
+    { route: '/guide/nature-of-code', icon: '\uD83E\uDDEC', label: 'Nature of Code' },
+]
+
+<NestedSidebar
+    title="My Study"
+    subtitle="Learning Platform"
+    accentColor="pink"
+    sections={sections}
+    extras={extras}
+    footerLinks={[{ route: '/all', label: 'All Items' }]}
+    onSearchOpen={() => setSearchOpen(true)}
+    mobileOpen={mobileOpen}
+    onMobileClose={() => setMobileOpen(false)}
+    storageKey="sidebar-expanded"
+/>`
+
 const appLayoutCode = `// App.tsx
 import { AppLayout, StudyProvider, ThemeProvider } from '@study-ui/components'
 
@@ -64,6 +102,29 @@ export function LayoutPage() {
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Layout Components</h1>
                 <p className="text-gray-500 dark:text-gray-400">3단 레이아웃 시스템과 네비게이션 컴포넌트</p>
             </div>
+
+            <Section id="nested-sidebar" title="NestedSidebar">
+                <Prose>
+                    계층형(폴더/아이템) 사이드바 네비게이션입니다.
+                    그룹별 접기/펼치기, 현재 라우트 자동 확장, localStorage 상태 유지,
+                    검색 버튼, 테마 토글을 지원합니다. Sidebar의 확장 버전입니다.
+                </Prose>
+                <CardGrid cols={3}>
+                    <InfoBox color="blue" title="계층 구조">
+                        Section → Group → Item 3단 트리. 그룹은 접기/펼치기 가능.
+                    </InfoBox>
+                    <InfoBox color="green" title="자동 확장">
+                        현재 라우트에 해당하는 그룹을 자동으로 펼침. 상태는 localStorage에 저장.
+                    </InfoBox>
+                    <InfoBox color="purple" title="Extras & Footer">
+                        섹션 외 독립 링크(가이드 등)와 푸터 링크를 별도 영역에 표시.
+                    </InfoBox>
+                </CardGrid>
+                <Alert variant="tip" title="accentColor">
+                    accentColor prop으로 활성 아이템 색상을 변경할 수 있습니다 (기본: pink). Tailwind 색상명을 사용하세요.
+                </Alert>
+                <CodeBlock code={nestedSidebarCode} language="tsx" filename="NestedSidebar 사용법" />
+            </Section>
 
             <Section id="applayout" title="AppLayout">
                 <Prose>

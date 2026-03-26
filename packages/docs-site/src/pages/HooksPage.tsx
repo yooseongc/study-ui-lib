@@ -4,6 +4,7 @@ const hooksOverview = [
     { cells: ['useAnimationStep', '단계별 애니메이션 상태 관리', 'AnimatedDiagram, 시각화'] },
     { cells: ['useD3', 'D3.js SVG 렌더링 ref 관리', 'D3Container 대안, 커스텀 SVG'] },
     { cells: ['useThree', 'Three.js 캔버스 렌더링 ref 관리', 'WebGLCanvas 대안, 커스텀 3D'] },
+    { cells: ['useIframeConsole', 'iframe 콘솔 메시지 수신', 'IframeRunner, ConsolePanel'] },
     { cells: ['useTheme', '테마 상태 및 토글 함수', '테마 전환 버튼'] },
     { cells: ['useIsDark', '다크 모드 여부 (boolean)', 'D3/스타일 조건부 분기'] },
     { cells: ['useStudyConfig', 'SiteConfig 접근', '토픽/용어 데이터 접근'] },
@@ -83,6 +84,32 @@ function RotatingCube() {
     return <canvas ref={canvasRef} width={400} height={300} />
 }`
 
+const useIframeConsoleCode = `import { useIframeConsole, CONSOLE_BRIDGE_SCRIPT } from '@study-ui/components'
+
+function MyIframeRunner() {
+    const { entries, clear, errorCount, warnCount } = useIframeConsole()
+
+    // CONSOLE_BRIDGE_SCRIPT를 iframe srcdoc에 삽입하면
+    // iframe 내부 console.log/warn/error/info가 entries로 수신됩니다.
+    const srcdoc = \`<html><head>\${CONSOLE_BRIDGE_SCRIPT}</head>
+        <body><script>console.log("hello from iframe")<\\/script></body></html>\`
+
+    return (
+        <div>
+            <iframe srcDoc={srcdoc} />
+            <p>Errors: {errorCount}, Warnings: {warnCount}</p>
+            <ConsolePanel entries={entries} onClear={clear} />
+        </div>
+    )
+}`
+
+const iframeConsoleReturn = [
+    { cells: ['entries', 'ConsoleEntry[]', 'iframe에서 수신된 콘솔 메시지 배열 (최대 200개)'] },
+    { cells: ['clear', '() => void', '콘솔 엔트리 초기화'] },
+    { cells: ['errorCount', 'number', 'error 레벨 메시지 수'] },
+    { cells: ['warnCount', 'number', 'warn 레벨 메시지 수'] },
+]
+
 const themeHooksCode = `import { useTheme, useIsDark, useStudyConfig } from '@study-ui/components'
 
 function MyComponent() {
@@ -158,6 +185,24 @@ export function HooksPage() {
                 </CardGrid>
                 <div className="mt-4">
                     <CodeBlock code={useThreeCode} language="tsx" filename="RotatingCube.tsx" />
+                </div>
+            </Section>
+
+            <Section id="use-iframe-console" title="useIframeConsole">
+                <Alert variant="tip" title="IframeRunner 내장">
+                    IframeRunner 컴포넌트에 이미 내장되어 있습니다. 커스텀 iframe 구성이 필요한 경우에만 직접 사용하세요.
+                </Alert>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    iframe 내부의 <code className="font-mono text-sm text-blue-600 dark:text-blue-400">console.log/warn/error/info</code>를
+                    postMessage로 수신하는 훅입니다.
+                    <code className="font-mono text-sm text-blue-600 dark:text-blue-400">CONSOLE_BRIDGE_SCRIPT</code>를 iframe의 srcdoc에 삽입하면 동작합니다.
+                </p>
+                <InfoTable
+                    headers={[{ header: '반환값', mono: true }, { header: '타입', mono: true }, { header: '설명' }]}
+                    rows={iframeConsoleReturn}
+                />
+                <div className="mt-4">
+                    <CodeBlock code={useIframeConsoleCode} language="tsx" filename="useIframeConsole 사용법" />
                 </div>
             </Section>
 
