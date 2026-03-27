@@ -38,7 +38,7 @@ export const CONSOLE_BRIDGE_SCRIPT = `
         send('error', ['[Unhandled Promise] ' + (e.reason instanceof Error ? e.reason.message : String(e.reason))]);
     };
 })();
-<\\/script>`
+<\/script>`
 
 /**
  * Hook that listens for console messages forwarded from an iframe via postMessage.
