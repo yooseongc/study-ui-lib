@@ -159,7 +159,7 @@ export function NestedSidebar({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <span className="flex-1 text-left text-xs">Search...</span>
-                    <kbd className="hidden sm:inline text-xs border border-gray-300 dark:border-gray-600 rounded px-1">\u2318K</kbd>
+                    <kbd className="hidden sm:inline text-xs border border-gray-300 dark:border-gray-600 rounded px-1">⌘K</kbd>
                 </button>
             </div>
 
