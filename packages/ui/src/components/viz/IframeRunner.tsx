@@ -200,7 +200,7 @@ export function IframeRunner({
                     >
                         Console
                     </button>
-                    <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">{width}\u00D7{height}</span>
+                    <span className="text-[10px] text-gray-500 font-mono hidden sm:inline">{width}×{height}</span>
                 </div>
             </div>
 
