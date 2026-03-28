@@ -207,7 +207,7 @@ export function CodeViewer({
     const isFileTooLarge = activeFile.content.length > maxDisplaySize
     const fileSizeKB = (activeFile.content.length / 1024).toFixed(1)
 
-    const scrollbarClass = '[&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar]:h-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400/60 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600/40 dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-600/60'
+    const scrollbarClass = '[&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar]:h-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400/60 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600/40 dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-600/60 [&_pre]:!overflow-visible'
 
     const codePanel = (
         <div className="flex-1 relative min-h-0" style={{ background: codeBg }}>
