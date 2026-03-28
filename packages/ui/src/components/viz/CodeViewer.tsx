@@ -21,6 +21,10 @@ export interface CodeViewerProps {
     runnerHeight?: number
     /** Max file size in bytes to display code (larger files show placeholder) */
     maxDisplaySize?: number
+    /** Enable code editing mode */
+    editable?: boolean
+    /** Callback when files are changed in edit mode */
+    onFilesChange?: (files: FileEntry[]) => void
     className?: string
 }
 
@@ -31,12 +35,16 @@ export function CodeViewer({
     language = 'javascript',
     runnerHeight = 600,
     maxDisplaySize = 50 * 1024,
+    editable = false,
+    onFilesChange,
     className = '',
 }: CodeViewerProps) {
     const [activeTab, setActiveTab] = useState(0)
     const [layout, setLayout] = useState<LayoutMode>(runner ? 'horizontal' : 'code-only')
     const [showFileTree, setShowFileTree] = useState(true)
     const [copied, setCopied] = useState(false)
+    const [editing, setEditing] = useState(false)
+    const [editContent, setEditContent] = useState('')
     const codeScrollRef = useRef<HTMLDivElement>(null)
     const [canScrollDown, setCanScrollDown] = useState(false)
     const isDark = useIsDark()
@@ -77,10 +85,27 @@ export function CodeViewer({
     const panelHeight = runnerHeight + 268
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(activeFile.content.trim()).then(() => {
+        const text = editing ? editContent : activeFile.content.trim()
+        navigator.clipboard.writeText(text).then(() => {
             setCopied(true)
             setTimeout(() => setCopied(false), 1500)
         })
+    }
+
+    const handleEditToggle = () => {
+        if (!editing) {
+            setEditContent(activeFile.content)
+            setEditing(true)
+        } else {
+            setEditing(false)
+        }
+    }
+
+    const handleRunEdited = () => {
+        if (!onFilesChange) return
+        const newFiles = files.map((f, i) => i === activeTab ? { ...f, content: editContent } : f)
+        onFilesChange(newFiles)
+        setEditing(false)
     }
 
     const layoutBtn = (mode: LayoutMode, icon: string, titleText: string) => (
@@ -132,6 +157,33 @@ export function CodeViewer({
                 ))}
             </div>
             <div className="shrink-0 flex items-center gap-1 mr-1">
+                {/* Edit/Run buttons */}
+                {editable && (
+                    <>
+                        <button
+                            onClick={handleEditToggle}
+                            className={`text-[10px] px-2 py-1 rounded transition-colors focus-visible:outline-2 focus-visible:outline-pink-500 ${
+                                editing
+                                    ? 'text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-900/30'
+                                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                            }`}
+                            aria-label={editing ? 'Exit edit mode' : 'Edit code'}
+                            title={editing ? 'Exit edit mode' : 'Edit code'}
+                        >
+                            {editing ? 'View' : 'Edit'}
+                        </button>
+                        {editing && (
+                            <button
+                                onClick={handleRunEdited}
+                                className="text-[10px] px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition-colors focus-visible:outline-2 focus-visible:outline-pink-500"
+                                aria-label="Run edited code"
+                                title="Run edited code (Ctrl+Enter)"
+                            >
+                                Run
+                            </button>
+                        )}
+                    </>
+                )}
                 {/* Copy button */}
                 <button
                     onClick={handleCopy}
@@ -155,6 +207,8 @@ export function CodeViewer({
     const isFileTooLarge = activeFile.content.length > maxDisplaySize
     const fileSizeKB = (activeFile.content.length / 1024).toFixed(1)
 
+    const scrollbarClass = '[&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar]:h-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-400/60 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600/40 dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-600/60'
+
     const codePanel = (
         <div className="flex-1 relative min-h-0" style={{ background: codeBg }}>
             {isFileTooLarge ? (
@@ -162,12 +216,24 @@ export function CodeViewer({
                     <p className="text-sm font-mono mb-1">{activeFile.name} ({fileSizeKB} KB)</p>
                     <p className="text-xs">File too large to display in code view.</p>
                 </div>
+            ) : editing ? (
+                <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    onKeyDown={(e) => { if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); handleRunEdited() } }}
+                    className={`absolute inset-0 w-full h-full resize-none border-0 outline-none font-mono text-[0.82rem] leading-relaxed p-4 ${scrollbarClass}`}
+                    style={{ background: codeBg, color: isDark ? '#e6edf3' : '#1f2328', tabSize: 4 }}
+                    spellCheck={false}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                />
             ) : (
                 <>
                     <div
                         ref={codeScrollRef}
                         onScroll={checkScroll}
-                        className="absolute inset-0 overflow-auto"
+                        className={`absolute inset-0 overflow-scroll ${scrollbarClass}`}
                     >
                         <SyntaxHighlighter
                             language={language}
@@ -184,7 +250,7 @@ export function CodeViewer({
                             <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] rounded-full px-2 py-0.5 animate-bounce ${
                                 isDark ? 'text-gray-500 bg-gray-800/80' : 'text-gray-400 bg-white/80'
                             }`}>
-                                \u2193 scroll
+                                ↓ scroll
                             </div>
                         </div>
                     )}
